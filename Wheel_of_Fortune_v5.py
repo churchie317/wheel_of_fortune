@@ -113,7 +113,6 @@ def game(players, playerOrder_val):
     round_num = 1
     # list that tracks the starting order of players throughout game
     playerOrder = get_playerOrder(players, playerOrder_val)
-    playerOrder_val = playerOrder_val
     
     while round_num <= num_rounds:
 ##        print "playerOrder_val is:", playerOrder_val
@@ -484,7 +483,7 @@ def get_playerNames(numPlayers, playerNames_hum, playerNames_comp):
 
 
 def get_playerOrder(players, playerOrder_val):
-    playerOrder = [0, 0, 0]
+    playerOrder = []
     print "We will now play the Toss-Up Puzzle for possession of The Wheel in the first"
     print "round."
     print ""
@@ -493,19 +492,13 @@ def get_playerOrder(players, playerOrder_val):
     print string.center(("-" * 80), 80)
     raw_input ("Press 'ENTER' to continue: ")
     for i in (0, 1, 2):
-##        if i == 0:
-##            print ""
-##            print players[i] + " will spin first."
         print ""
         print players[i] + ", get ready. You're up next!"
         print players[i] + " prepares to spin The Wheel."
-##        print string.center(("-" * 80), 80)
         print ""
         raw_input("Press 'ENTER' to spin The Wheel. ")
         print ""
-        prize = "bankrupt"
-        while prize == "bankrupt":
-            prize = get_prize(1)
+        prize = prize = get_prize(0)
         print string.center(("-" * 80), 80)
         print string.center((players[i] + " received $" + str(prize) + "."), 80)
         print string.center(("-" * 80), 80)
@@ -516,7 +509,21 @@ def get_playerOrder(players, playerOrder_val):
                 playerOrder_val[i][j] = players[i]
     playerOrder_val.sort(reverse=True)
     for i in range(3):
-        playerOrder[i] = playerOrder_val[i][1]
+        if i == 0:
+            playerOrder.insert(0, playerOrder_val[i][1])
+        else:
+            if i == 1:
+                if playerOrder_val[i][0] > playerOrder_val[0][0]:
+                    playerOrder.insert(0, playerOrder_val[i][1])
+                else:
+                    playerOrder.insert(1, playerOrder_val[i][1])
+            else:
+                if playerOrder_val[i][0] > playerOrder_val[0][0] and playerOrder_val[1][0]:
+                    playerOrder.insert(0, playerOrder_val[i][1])
+                elif playerOrder_val[i][0] < playerOrder_val[0][0] and playerOrder_val[1][0]:
+                    playerOrder.insert(2, playerOrder_val[i][1])
+                else:
+                    playerOrder.insert(1, playerOrder_val[i][1])
     print ""
     print "Congratulations,", playerOrder[0] + "! You have won the Toss-Up Spin and will take possession"
     print "of The Wheel at the beginning of the first round."
@@ -525,8 +532,8 @@ def get_playerOrder(players, playerOrder_val):
     print ""
     print string.center(("-" * 80), 80)
     raw_input ("Press 'ENTER' to begin the first round: ")
-    print ""
-
+    print ""         
+    
     return playerOrder
 
 
@@ -610,6 +617,13 @@ def get_guessVowel():
 
 def get_prize(game_round):
     prize = 0
+    if game_round == 0:
+        prizes = [500, 500, 500, 500, 500, 500, 500, 500, 750, 750,
+          500, 500, 500, 500, 550, 550, 550, 600, 600, 600, 600, 600,
+          600, 650, 650, 650, 650, 650, 650, 700, 700, 700, 700, 700,
+          700, 700, 700, 700, 800, 800, 800, 800, 800, 800, 900, 900,
+          900, 900, 900, 900, 900, 900, 900, 2500, 2500, 2500, 750, 750]
+        prize = prizes[random.randint(0, 57)]
     if game_round == 1:
         prizes = ["bankrupt", "bankrupt", "bankrupt", "bankrupt", "bankrupt",
           "bankrupt", "bankrupt", "bankrupt", 500, 500, 500, 500, 500, 500, 500, 500,
